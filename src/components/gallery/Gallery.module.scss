@@ -1,0 +1,99 @@
+.masonryGrid {
+    display: flex;
+    margin-left: calc(-1 * var(--static-space-16));
+    width: 100%;
+}
+
+.masonryGridColumn {
+    padding-left: var(--static-space-16);
+    background-clip: padding-box;
+}
+
+.gridItem {
+    margin-bottom: var(--static-space-16);
+}
+.gridItemWrapper {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gridItemWrapper:hover .overlay,
+.gridItemWrapper.active .overlay {
+    opacity: 1; /* Show overlay on hover or when active */
+}
+
+.gridItem {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 15px; /* Position at the bottom of the image */
+    left: 0;
+    //border-radius: 5%;
+    width: 100%;
+    height: 50px; /* Cover only the bottom 20% of the image */
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: row; /* Align items horizontally */
+    justify-content: space-between; /* Space between left and right sections */
+    align-items: center;
+    padding: 0 1rem; /* Add padding for spacing */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center; /* Align like button and count vertically */
+    //gap: 10px; /* Add spacing between like button and count */
+}
+
+.likeButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem; /* Default size for desktop */
+    cursor: pointer;
+    padding: 0.5rem; /* Add padding for better touch interaction */
+
+    &:hover {
+        transform: scale(1.2);
+        transition: transform 0.2s ease-in-out;
+    }
+}
+
+/* Adjust like button for mobile devices */
+@media (max-width: 768px) {
+    .likeButton {
+        font-size: 1rem; /* Increase size for mobile */
+        padding: 0.75rem; /* Add more padding for touch interaction */
+    }
+
+    .likeCount {
+        font-size: 1.2rem; /* Slightly increase the like count font size */
+    }
+}
+
+.likeCount {
+    color: white;
+    font-size: 1rem;
+}
+
+.downloadButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+
+    &:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease-in-out;
+    }
+}
