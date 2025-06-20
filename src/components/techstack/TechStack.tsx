@@ -1,6 +1,6 @@
 import React from "react";
 import { Flex, Text } from "@/once-ui/components";
-import * as Icons from "@/components/Icons";
+import * as IconComponents from "@/components/Icons";
 import clsx from "clsx";
 
 interface TechStackLogoProps {
