@@ -400,18 +400,18 @@ export const Kbar: React.FC<KbarProps> = ({ items, children, ...rest }) => {
     setIsOpen(true);
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const handleClose = useCallback(() => {
+  setIsOpen(false);
+}, []); // setIsOpen from useState is stable
 
   // Close Kbar when pathname changes
-  useEffect(() => {
-    if (isOpen) {
-      handleClose();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, isOpen, handleClose]);
-
+useEffect(() => {
+  if (isOpen) {
+    handleClose();
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps 
+}, [pathname, isOpen, handleClose]);
+  
   // Add keyboard shortcut listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
