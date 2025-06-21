@@ -3,6 +3,7 @@
 import { Flex, RevealFx, Scroller, SmartImage } from "@/once-ui/components";
 import { useEffect, useState, useRef, CSSProperties } from "react";
 import { useSwipeable } from "react-swipeable";
+import { useEffect, useState, useRef, CSSProperties, useCallback } from "react";
 
 interface Image {
   src: string;
@@ -33,39 +34,36 @@ const Carousel: React.FC<CarouselProps> = ({
   const nextImageRef = useRef<HTMLImageElement | null>(null);
   const transitionTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  const preloadNextImage = (nextIndex: number) => {
-    if (nextIndex >= 0 && nextIndex < images.length) {
-      nextImageRef.current = new Image();
-      nextImageRef.current.src = images[nextIndex].src;
-    }
-  };
+  const preloadNextImage = useCallback((nextIndex: number) => {
+  if (nextIndex >= 0 && nextIndex < images.length) {
+    nextImageRef.current = new Image();
+    nextImageRef.current.src = images[nextIndex].src;
+  }
+}, [images]);
 
-  const handleControlClick = (nextIndex: number) => {
-    if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
-      preloadNextImage(nextIndex);
+const handleControlClick = useCallback((nextIndex: number) => {
+  if (nextIndex !== activeIndex && !transitionTimeoutRef.current) {
+    preloadNextImage(nextIndex);
+    setIsTransitioning(false);
+    transitionTimeoutRef.current = setTimeout(() => {
+      setActiveIndex(nextIndex);
+      setTimeout(() => {
+        setIsTransitioning(true);
+        transitionTimeoutRef.current = undefined;
+      }, 300);
+    }, 800);
+  }
+}, [activeIndex, preloadNextImage]);
 
-      setIsTransitioning(false);
-
-      transitionTimeoutRef.current = setTimeout(() => {
-        setActiveIndex(nextIndex);
-
-        setTimeout(() => {
-          setIsTransitioning(true);
-          transitionTimeoutRef.current = undefined;
-        }, 300);
-      }, 800);
-    }
-  };
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "ArrowRight") {
-      const nextIndex = (activeIndex + 1) % images.length;
-      handleControlClick(nextIndex);
-    } else if (event.key === "ArrowLeft") {
-      const prevIndex = (activeIndex - 1 + images.length) % images.length;
-      handleControlClick(prevIndex);
-    }
-  };
+const handleKeyDown = useCallback((event: KeyboardEvent) => {
+  if (event.key === "ArrowRight") {
+    const nextIndex = (activeIndex + 1) % images.length;
+    handleControlClick(nextIndex);
+  } else if (event.key === "ArrowLeft") {
+    const prevIndex = (activeIndex - 1 + images.length) % images.length;
+    handleControlClick(prevIndex);
+  }
+}, [activeIndex, images.length, handleControlClick]);
 
   const handleSwipe = (direction: "left" | "right") => {
     if (direction === "left") {
@@ -84,12 +82,12 @@ const Carousel: React.FC<CarouselProps> = ({
     trackMouse: true,
   });
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [activeIndex]);
+ useEffect(() => {
+  window.addEventListener("keydown", handleKeyDown);
+  return () => {
+    window.removeEventListener("keydown", handleKeyDown);
+  };
+}, [handleKeyDown]);
 
   useEffect(() => {
     if (!revealedByDefault && !initialTransition) {
